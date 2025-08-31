@@ -34,6 +34,7 @@ public:
     QPushButton *addWidgetButton;
     QPushButton *deleteCanvasButton;
     QPushButton *deleteWidgetButton;
+    QPushButton *editCanvasButton;
     QSpacerItem *horizontalSpacer;
     QGraphicsView *canvasView;
 
@@ -77,6 +78,11 @@ public:
 
         horizontalLayout->addWidget(deleteWidgetButton);
 
+        editCanvasButton = new QPushButton(titleBar);
+        editCanvasButton->setObjectName(QString::fromUtf8("editCanvasButton"));
+
+        horizontalLayout->addWidget(editCanvasButton);
+
         horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout->addItem(horizontalSpacer);
@@ -106,6 +112,7 @@ public:
         addWidgetButton->setText(QCoreApplication::translate("CustomDash", "\346\226\260\345\242\236\346\216\247\344\273\266", nullptr));
         deleteCanvasButton->setText(QCoreApplication::translate("CustomDash", "\345\210\240\351\231\244\347\224\273\345\270\203", nullptr));
         deleteWidgetButton->setText(QCoreApplication::translate("CustomDash", " \345\210\240\351\231\244\346\216\247\344\273\266", nullptr));
+        editCanvasButton->setText(QCoreApplication::translate("CustomDash", "\347\274\226\350\276\221", nullptr));
     } // retranslateUi
 
 };

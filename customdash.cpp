@@ -6,12 +6,16 @@
 #include <QInputDialog>
 #include <QMessageBox>
 
-CustomDash::CustomDash(QWidget *parent)
-    : QMainWindow(parent), ui(new Ui::CustomDash), m_refreshThread(new DataRefreshThread(this))
+CustomDash::CustomDash(QWidget* parent)
+    : QMainWindow(parent), ui(new Ui::CustomDash), m_refreshThread(new DataRefreshThread(this)),
+    m_isEditable(false)
 {
     ui->setupUi(this);
-    setWindowTitle("CustomDash");
 
+    setCanvasEditable(false);
+
+    setWindowTitle("CustomDash");
+ 
     // 初始化第一个画布
     addCanvas("默认画布");
 
@@ -33,6 +37,43 @@ CustomDash::~CustomDash()
     m_canvases.clear();
 
     delete ui;
+}
+
+
+// 设置画布的可编辑状态
+void CustomDash::setCanvasEditable(bool editable)
+{
+    int currentIndex = ui->canvasList->currentIndex();
+    if (currentIndex >= 0 && currentIndex < m_canvases.size()) {
+        CanvasScene* currentScene = m_canvases[currentIndex];
+        for (QGraphicsItem* item : currentScene->items()) {
+            item->setFlag(QGraphicsItem::ItemIsMovable, editable);
+            item->setFlag(QGraphicsItem::ItemIsSelectable, editable);
+            item->setFlag(QGraphicsItem::ItemIsFocusable, editable);
+        }
+    }
+}
+
+// 编辑按钮的槽函数
+void CustomDash::on_editCanvasButton_clicked()
+{
+    if (m_isEditable) {
+        // 如果当前是可编辑状态，则切换为不可编辑
+        m_isEditable = false;
+        ui->editCanvasButton->setText("编辑");
+        setCanvasEditable(false);
+    }
+    else {
+        // 如果当前是不可编辑状态，则弹出二次确认对话框
+        QMessageBox::StandardButton reply;
+        reply = QMessageBox::question(this, "确认", "是否要进入编辑模式？",
+            QMessageBox::Yes | QMessageBox::No);
+        if (reply == QMessageBox::Yes) {
+            m_isEditable = true;
+            ui->editCanvasButton->setText("完成编辑");
+            setCanvasEditable(true);
+        }
+    }
 }
 
 void CustomDash::addCanvas(const QString& name)
